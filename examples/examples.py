@@ -6,9 +6,8 @@ sys.path.append(path)
 from src import fcm, equal, da, minmax, shrinkage
 
 from sklearn.datasets import make_blobs
-from matplotlib import pyplot as plt
-import numpy as np 
-from seaborn import scatterplot as scatter
+
+import numpy as np
 from sklearn.metrics.pairwise import haversine_distances
 import collections
 
@@ -25,7 +24,6 @@ def fcm_example():
     centers = model.cluster_centers_
     labels = model.labels_
 
-    plot(centers, labels, X)
 
 def equal_example():
     n_samples = 2000
@@ -39,7 +37,6 @@ def equal_example():
     labels = model.labels_
 
     print("Cluster size count: ", collections.Counter(labels))
-    plot(centers, labels, X)
 
 def minmax_example():
     n_samples = 2000
@@ -52,7 +49,6 @@ def minmax_example():
     labels = model.labels_
 
     print("Cluster size count: ", collections.Counter(labels))
-    plot(centers, labels, X)
 
 def da_example():
     n_samples = 2000
@@ -67,7 +63,6 @@ def da_example():
     cluster_size = list(collections.Counter(labels).values())
     print("Cluster size: ", cluster_size)
     print("Cluster size count: ", [c / n_samples for c in cluster_size])
-    plot(centers, labels, X)
 
 def shrinkage_example():
     n_samples = 1000
@@ -82,14 +77,6 @@ def shrinkage_example():
     centers = model.cluster_centers_
     labels = model.labels_
 
-    plot(centers, labels, X)
-
-def plot(centers, labels, X):
-    f, axes = plt.subplots(1, 2, figsize=(11, 5))
-    scatter(X[:, 0], X[:, 1], ax=axes[0])
-    scatter(X[:, 0], X[:, 1], ax=axes[1], hue=labels)
-    scatter(centers[:, 0], centers[:, 1], ax=axes[1], marker="s", s=200)
-    plt.show()
 
 if __name__ == "__main__":
     shrinkage_example()

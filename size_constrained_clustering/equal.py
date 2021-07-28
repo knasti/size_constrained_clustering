@@ -224,27 +224,3 @@ class SameSizeKMeansMinCostFlow(base.Base):
     def predict(self, X):
         return self.clf.predict(X)
 
-if __name__ == "__main__":
-    from sklearn.datasets import make_blobs
-    from matplotlib import pyplot as plt
-    from seaborn import scatterplot as scatter
-    from sklearn.metrics.pairwise import haversine_distances
-    n_samples = 2000
-    n_clusters = 4  # use 3 bins for calibration_curve as we have 3 clusters here
-    centers = [(-5, -5), (0, 0), (5, 5), (7, 10)]
-
-    X, _ = make_blobs(n_samples=n_samples, n_features=2, cluster_std=1.0,
-                    centers=centers, shuffle=False, random_state=42)
-
-    # X = np.random.rand(n_samples, 2)
-    equal = SameSizeKMeansMinCostFlow(n_clusters)
-    equal.fit(X)
-
-    fcm_centers = equal.cluster_centers_
-    fcm_labels = equal.labels_
-
-    f, axes = plt.subplots(1, 2, figsize=(11, 5))
-    scatter(X[:, 0], X[:, 1], ax=axes[0])
-    scatter(X[:, 0], X[:, 1], ax=axes[1], hue=fcm_labels)
-    scatter(fcm_centers[:, 0], fcm_centers[:, 1], ax=axes[1], marker="s",s=200)
-    plt.show()
