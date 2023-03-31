@@ -17,8 +17,11 @@ import numpy as np
 import scipy.sparse as sp
 from scipy.spatial.distance import cdist
 
-import sys 
-import os 
+import sys
+import os
+
+from size_constrained_clustering.k_means_constrained.mincostflow_vectorized import SimpleMinCostFlowVectorized
+
 folderpath = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.append(folderpath)
 from sklearn_import.metrics.pairwise import euclidean_distances
@@ -32,7 +35,7 @@ from joblib import delayed
 from sklearn_import.cluster._k_means import _centers_dense, _centers_sparse
 from sklearn_import.cluster.k_means_ import _validate_center_shape, _tolerance, KMeans, _init_centroids
 
-from k_means_constrained.mincostflow_vectorized import SimpleMinCostFlowVectorized
+
 
 
 def k_means_constrained(X, n_clusters, size_min=None, size_max=None, init='k-means++',
@@ -332,7 +335,7 @@ def kmeans_constrained_single(X, n_clusters, size_min=None, size_max=None,
         centers_old = centers.copy()
         # labels assignment is also called the E-step of EM
         labels, inertia = \
-            _labels_constrained(X, centers, size_min, size_max, 
+            _labels_constrained(X, centers, size_min, size_max,
             distances=distances, distance_func=distance_func)
 
         # computation of the means is also called the M-step of EM
@@ -361,7 +364,7 @@ def kmeans_constrained_single(X, n_clusters, size_min=None, size_max=None,
         # rerun E-step in case of non-convergence so that predicted labels
         # match cluster centers
         best_labels, best_inertia = \
-            _labels_constrained(X, centers, size_min, size_max, 
+            _labels_constrained(X, centers, size_min, size_max,
             distances=distances, distance_func=distance_func)
 
     return best_labels, best_inertia, best_centers, i + 1
