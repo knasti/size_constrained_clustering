@@ -1,8 +1,7 @@
 #!/usr/bin/env python
 
 import numpy as np
-from ortools.graph.pywrapgraph import SimpleMinCostFlow
-
+from ortools.graph.python.min_cost_flow import SimpleMinCostFlow
 
 # Cython paths must be fully qualified
 from k_means_constrained.mincostflow_vectorized_ import \
@@ -21,4 +20,3 @@ class SimpleMinCostFlowVectorized(SimpleMinCostFlow):
 
     def FlowVectorized(self, arc):
         return SimpleMinCostFlow_FlowVectorized(self, arc)
-
