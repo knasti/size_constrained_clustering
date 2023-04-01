@@ -5,38 +5,38 @@
 @file: same_size_kmeans.py, equal size clustering with heuristics
 @Author: Jing Wang (jingw2@foxmail.com)
 @Date: 06/16/2020
-@paper: 
+@paper:
 @github reference: https://github.com/joshlk/k-means-constrained
 @Web: https://elki-project.github.io/tutorial/same-size_k_means
 '''
 
 from scipy.spatial.distance import cdist
-import numpy as np 
+import numpy as np
 # from sklearn.cluster._k_means import _k_init
 from sklearn.preprocessing import OneHotEncoder
 import collections
 import warnings
 
-import sys 
-import os 
+import sys
+import os
 path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(path)
 import base
-from k_means_constrained import KMeansConstrained
+from k_means_size_constrained import KMeansConstrained
 
 class SameSizeKMeansHeuristics(base.Base):
-    
+
     def __init__(self, n_clusters, max_iters=1000, distance_func=cdist, random_state=42):
         '''
         Args:
-            n_clusters (int): number of clusters 
+            n_clusters (int): number of clusters
             max_iters (int): maximum iterations
             distance_func (object): callable function with input (X, centers) / None, by default is l2-distance
             random_state (int): random state to initiate, by default it is 42
         '''
         super(SameSizeKMeansHeuristics, self).__init__(n_clusters, max_iters, distance_func)
         self.random_state = np.random.RandomState(random_state)
-    
+
     def fit(self, X):
         '''
         Args:
@@ -47,8 +47,8 @@ class SameSizeKMeansHeuristics(base.Base):
         maxsize = (n_samples + self.n_clusters - 1) // self.n_clusters
         if minsize != maxsize:
             warnings.warn("Cluster minimum and maximum size are {} and {}, respectively".format(minsize, maxsize))
-        
-        # initiate 
+
+        # initiate
         labels = self._init(X)
         encoder = OneHotEncoder()
         labels_onehot = encoder.fit_transform(labels.reshape((-1, 1))).toarray()
@@ -58,13 +58,13 @@ class SameSizeKMeansHeuristics(base.Base):
             # update centers
             labels_onehot = encoder.fit_transform(labels.reshape((-1, 1))).toarray()
             centers = self.update_centers(X, labels_onehot)
-            # compute distance to centers 
+            # compute distance to centers
             dist_mat = self.distance_func(X, centers)
             # calculate preference
             labels = labels.astype(int)
             preference = dist_mat[range(n_samples), labels] - np.min(dist_mat, axis=1)
             argsort = np.argsort(preference)[::-1] # descending order
-            # transfer list 
+            # transfer list
             transfer = {c: [] for c in range(self.n_clusters)}
 
             for sample_id in argsort:
@@ -93,32 +93,32 @@ class SameSizeKMeansHeuristics(base.Base):
                     if sample_id in transfer[source]:
                         transfer[source].remove(sample_id)
                     continue
-                
+
                 # if cluster size allows, move a single object
                 if (sample_gain > 0 and clusters[dest] < maxsize and clusters[source] > minsize):
                     labels[sample_id] = dest
-                    clusters[dest] += 1 
+                    clusters[dest] += 1
                     clusters[source] -= 1
                     if sample_id in transfer[source]:
                         transfer[source].remove(sample_id)
                     continue
-                
+
                 # if the object would prefer a different cluster, put in transfer list
                 if (sample_gain > 0):
                     transfer[source].append(sample_id)
-                
+
             if len(transfer) <= 0:
-                break 
-                
-            itr += 1 
+                break
+
+            itr += 1
             pending = sum([len(val) for key, val in transfer.items()])
             if itr >= self.max_iters:
                 print("Reach maximum iterations! Now pending transfer samples {}!".format(pending))
-                break 
+                break
 
-        self.cluster_centers_ = centers 
-        self.labels_ = labels    
-    
+        self.cluster_centers_ = centers
+        self.labels_ = labels
+
     def predict(self, X):
         '''
         Predict labels based input X
@@ -128,37 +128,37 @@ class SameSizeKMeansHeuristics(base.Base):
         dist_mat = self.distance_func(X, self.cluster_centers_)
         labels = np.argmin(dist_mat, axis=1)
         return labels
-    
+
     def update_centers(self, X, labels):
         '''
-        Update centers 
+        Update centers
         Args:
             X (array like): (n_samples, n_features)
             labels (array like): (n_samples, n_clusters), one-hot array
-        
+
         Return:
             centers (array like): (n_clusters, n_features)
         '''
         centers = (X.T.dot(labels)).T / np.sum(labels, axis=0).reshape((-1, 1))
         return centers
-        
+
     def _init(self, X):
         '''
-        Initiate centroids based on X input with kmeans ++ 
+        Initiate centroids based on X input with kmeans ++
 
         Args:
             X (array like): shape is (n_samples, n_features)
-        
+
         Returns:
-            labels (array like): shape is (n_samples,) 
+            labels (array like): shape is (n_samples,)
         '''
         n_samples, n_features = X.shape
         max_size = (n_samples + self.n_clusters - 1) // self.n_clusters
         # initiate centroids with kmeans++
         X_squared_norm = np.sum(np.square(X), axis=1)
         centers = base.k_init(X, self.n_clusters, X_squared_norm, self.random_state)
-        
-        # calculate priority 
+
+        # calculate priority
         dist_mat = self.distance_func(X, centers) # (n_samples, n_clusters)
         priority = np.max(dist_mat, axis=1) - np.min(dist_mat, axis=1)
         argsort = np.argsort(priority)[::-1] # descending order
@@ -181,22 +181,22 @@ class SameSizeKMeansHeuristics(base.Base):
                     samples.remove(sample_id)
                     visited.add(sample_id)
                 else:
-                    break 
+                    break
             dist_mat_copy = dist_mat.copy()
             # mask full cluster column
             m[:, cluster_id] = 1
             dist_mat_copy = np.ma.masked_array(dist_mat_copy, m)
             priority = np.max(dist_mat_copy, axis=1) - np.min(dist_mat_copy, axis=1)
             argsort = np.argsort(priority)[::-1] # descending order
-        
-        return labels 
+
+        return labels
 
 class SameSizeKMeansMinCostFlow(base.Base):
-     
+
     def __init__(self, n_clusters, max_iters=1000, distance_func=cdist, random_state=42):
         '''
         Args:
-            n_clusters (int): number of clusters 
+            n_clusters (int): number of clusters
             max_iters (int): maximum iterations
             distance_func (object): callable function with input (X, centers) / None, by default is l2-distance
             random_state (int): random state to initiate, by default it is 42
@@ -209,18 +209,18 @@ class SameSizeKMeansMinCostFlow(base.Base):
         minsize = n_samples // self.n_clusters
         maxsize = (n_samples + self.n_clusters - 1) // self.n_clusters
 
-        clf = KMeansConstrained(self.n_clusters, size_min=minsize, 
+        clf = KMeansConstrained(self.n_clusters, size_min=minsize,
             size_max=maxsize, distance_func=self.distance_func)
 
         if minsize != maxsize:
             warnings.warn("Cluster minimum and maximum size are {} and {}, respectively".format(minsize, maxsize))
-        
+
         clf.fit(X)
 
-        self.clf = clf 
+        self.clf = clf
         self.cluster_centers_ = self.clf.cluster_centers_
         self.labels_ = self.clf.labels_
-    
+
     def predict(self, X):
         return self.clf.predict(X)
 

@@ -46,7 +46,8 @@ def no_cythonize(extensions, **_ignore):
 
 path = os.path.dirname(os.path.abspath(__file__))
 extensions = [
-    Extension("size_constrained_clustering.k_means_constrained.mincostflow_vectorized_", [os.path.join(path, "size_constrained_clustering/k_means_constrained/mincostflow_vectorized_.pyx")],
+    Extension("size_constrained_clustering.k_means_constrained.mincostflow_vectorized_", [os.path.join(path,
+                                                                                                       "size_constrained_clustering/k_means_size_constrained/mincostflow_vectorized_.pyx")],
               include_dirs=[get_include()]),
     Extension("size_constrained_clustering.sklearn_import.cluster._k_means", [os.path.join(path, "size_constrained_clustering/sklearn_import/cluster/_k_means.pyx")],
               include_dirs=[get_include()]),

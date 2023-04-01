@@ -13,7 +13,7 @@
 import os
 import sys
 
-from size_constrained_clustering.k_means_constrained import KMeansConstrained
+from size_constrained_clustering.k_means_size_constrained import KMeansConstrained
 
 path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(path)

@@ -4,7 +4,7 @@ import numpy as np
 from ortools.graph.python.min_cost_flow import SimpleMinCostFlow
 
 # Cython paths must be fully qualified
-from k_means_constrained.mincostflow_vectorized_ import (
+from k_means_size_constrained.mincostflow_vectorized_ import (
     SimpleMinCostFlow_FlowVectorized,
     SimpleMinCostFlow_SetNodeSupplyVectorized,
     SimpleMinCostFlow_AddArcWithCapacityAndUnitCostVectorized,

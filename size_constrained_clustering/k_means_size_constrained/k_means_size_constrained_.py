@@ -20,7 +20,7 @@ from scipy.spatial.distance import cdist
 import sys
 import os
 
-from size_constrained_clustering.k_means_constrained.mincostflow_vectorized import SimpleMinCostFlowVectorized
+from size_constrained_clustering.k_means_size_constrained.mincostflow_vectorized import SimpleMinCostFlowVectorized
 
 folderpath = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.append(folderpath)
@@ -587,7 +587,7 @@ class KMeansConstrained(KMeans):
     Examples
     --------
 
-    >>> from k_means_constrained import KMeansConstrained
+    >>> from k_means_size_constrained import KMeansConstrained
     >>> import numpy as np
     >>> X = np.array([[1, 2], [1, 4], [1, 0],
     ...               [4, 2], [4, 4], [4, 0]])
