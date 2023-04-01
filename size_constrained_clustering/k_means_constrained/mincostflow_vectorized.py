@@ -6,8 +6,7 @@ from ortools.graph.python.min_cost_flow import SimpleMinCostFlow
 # Cython paths must be fully qualified
 from k_means_constrained.mincostflow_vectorized_ import \
     SimpleMinCostFlow_AddArcWithCapacityAndUnitCostVectorized, \
-    SimpleMinCostFlow_SetNodeSupplyVectorized, \
-
+    SimpleMinCostFlow_SetNodeSupplyVectorized
 
 class SimpleMinCostFlowVectorized(SimpleMinCostFlow):
 
