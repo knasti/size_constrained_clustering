@@ -3,7 +3,7 @@ import numpy as np
 cimport numpy as np
 cimport cython
 
-from ortools.graph._pywrapgraph import \
+from ortools.graph.pywrapgraph import \
     SimpleMinCostFlow_AddArcWithCapacityAndUnitCost,\
     SimpleMinCostFlow_SetNodeSupply,\
     SimpleMinCostFlow_Flow
