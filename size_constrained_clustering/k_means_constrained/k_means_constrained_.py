@@ -495,7 +495,7 @@ def solve_min_cost_flow_graph(edges, costs, capacities, supplies, n_C, n_X):
     min_cost_flow.SetNodeSupplyVectorized(np.arange(N_nodes, dtype='int32'), supplies)
 
     # Find the minimum cost flow between node 0 and node 4.
-    if min_cost_flow.Solve() != min_cost_flow.OPTIMAL:
+    if min_cost_flow.solve() != min_cost_flow.OPTIMAL:
         raise Exception('There was an issue with the min cost flow input.')
 
     # Assignment

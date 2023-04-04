@@ -3,7 +3,7 @@
 import numpy as np
 
 # Cython paths must be fully qualified
-from ortools.graph.pywrapgraph import SimpleMinCostFlow
+from ortools.graph.python.min_cost_flow import SimpleMinCostFlow
 
 from size_constrained_clustering.k_means_constrained.mincostflow_vectorized_ import (
     SimpleMinCostFlow_AddArcWithCapacityAndUnitCostVectorized,

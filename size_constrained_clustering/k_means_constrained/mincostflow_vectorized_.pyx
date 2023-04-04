@@ -3,11 +3,6 @@ import numpy as np
 cimport numpy as np
 cimport cython
 
-from ortools.graph.pywrapgraph import \
-    SimpleMinCostFlow_AddArcWithCapacityAndUnitCost,\
-    SimpleMinCostFlow_SetNodeSupply,\
-    SimpleMinCostFlow_Flow
-
 DTYPE = np.int32
 ctypedef np.int32_t DTYPE_t
 
@@ -32,7 +27,7 @@ def SimpleMinCostFlow_AddArcWithCapacityAndUnitCostVectorized(
     assert unit_cost.shape[0] == len
 
     for i in range(len):
-        SimpleMinCostFlow_AddArcWithCapacityAndUnitCost(self, tail[i], head[i], capacity[i], unit_cost[i])
+        self.add_arc_with_capacity_and_unit_cost(tail[i], head[i], capacity[i], unit_cost[i])
 
 
 @cython.boundscheck(False)
@@ -47,8 +42,7 @@ def SimpleMinCostFlow_SetNodeSupplyVectorized(self,
     assert supply.shape[0] == len
 
     for i in range(len):
-        SimpleMinCostFlow_SetNodeSupply(self, node[i], supply[i])
-
+        self.set_node_supply(node[i], supply[i])
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
@@ -62,7 +56,7 @@ def SimpleMinCostFlow_FlowVectorized(self,
     cdef np.ndarray flow = np.zeros(len, dtype=DTYPE)
 
     for i in range(len):
-        flow[i] = SimpleMinCostFlow_Flow(self, arc[i])
+        flow[i] = self.flow(arc[i])
 
     return flow
 
