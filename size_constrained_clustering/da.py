@@ -32,7 +32,7 @@ class DeterministicAnnealing(base.Base):
         '''
         super(DeterministicAnnealing, self).__init__(n_clusters, max_iters, distance_func)
         self.lamb = distribution
-        assert np.sum(distribution) == 1 
+        assert round(np.sum(distribution),10) == 1 
         assert len(distribution) == n_clusters
         assert isinstance(T, list) or T is None
 
