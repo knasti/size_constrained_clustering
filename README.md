@@ -1,11 +1,4 @@
 ## Size Constrained Clustering Solver
-[![Build Status](https://travis-ci.org/jingw2/size_constrained_clustering.svg?branch=master)](https://travis-ci.org/jingw2/size_constrained_clustering)
-[![PyPI version](https://badge.fury.io/py/size-constrained-clustering.svg)](https://badge.fury.io/py/size-constrained-clustering)
-![GitHub](https://img.shields.io/github/license/jingw2/size_constrained_clustering)
-[![codecov](https://codecov.io/gh/jingw2/size_constrained_clustering/branch/master/graph/badge.svg)](https://codecov.io/gh/jingw2/size_constrained_clustering)
-![PyPI - Downloads](https://img.shields.io/pypi/dm/size-constrained-clustering)
-![Codecov](https://img.shields.io/codecov/c/github/jingw2/size_constrained_clustering)
-
 
 Implementation of Deterministic Annealing Size Constrained Clustering. 
 Size constrained clustering can be treated as an optimization problem. Details could be found in a set of reference paper.
@@ -26,14 +19,31 @@ pip install light-size-constrained-clustering
 
 Deterministic Annealing
 ```python
-n_samples = 2000
-n_clusters = 3
+# setup
+from light_size_constrained_clustering import da
+import numpy as np
+
+n_samples = 40 # number cells in spot
+n_clusters = 4 # distinct number of cell types
+distribution= [0.4,0.3,0.2,0.1] # distribution of each cell type (form deconv)
+seed = 17
+
+print(np.sum(distribution))
+np.random.seed(seed)
+
 X = np.random.rand(n_samples, 2)
 # distribution is the distribution of cluster sizes
-model = da.DeterministicAnnealing(n_clusters, distribution=[0.1, 0.6, 0.3])
+model = da.DeterministicAnnealing(n_clusters, distribution= distribution, random_state=seed)
+
 model.fit(X)
 centers = model.cluster_centers_
 labels = model.labels_
+print("Labels:")
+print(labels)
+print("Elements in cluster 0: ", np.count_nonzero(labels == 0))
+print("Elements in cluster 1: ", np.count_nonzero(labels == 1))
+print("Elements in cluster 2: ", np.count_nonzero(labels == 2))
+print("Elements in cluster 3: ", np.count_nonzero(labels == 3))
 ```
 ![alt text](https://github.com/jingw2/size_constrained_clustering/blob/master/pic/da.png)
 
