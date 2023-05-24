@@ -30,7 +30,7 @@ with open(os.path.join(path, "requirements.txt")) as fp:
     install_requires = fp.read().strip().split("\n")
 
 
-VERSION = "0.0.2"
+VERSION = "0.0.3"
 LICENSE = "MIT"
 setup(
     #ext_modules=extensions,

@@ -45,7 +45,7 @@ print("Elements in cluster 1: ", np.count_nonzero(labels == 1))
 print("Elements in cluster 2: ", np.count_nonzero(labels == 2))
 print("Elements in cluster 3: ", np.count_nonzero(labels == 3))
 ```
-![alt text](https://github.com/jingw2/size_constrained_clustering/blob/master/pic/da.png)
+
 
 Cluster size: 1200, 600 and 200 in the figure above, corresponding to distribution [0.6, 0.3, 0.1]
 
