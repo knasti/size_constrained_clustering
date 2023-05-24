@@ -103,10 +103,10 @@ else:
 with open(os.path.join(path, "requirements.txt")) as fp:
     install_requires = fp.read().strip().split("\n")
 
-class UniversalBdistWheel(bdist_wheel):
-    def finalize_options(self):
-        bdist_wheel.finalize_options(self)
-        self.universal = True
+# class UniversalBdistWheel(bdist_wheel):
+#     def finalize_options(self):
+#         bdist_wheel.finalize_options(self)
+#         self.universal = True
 
 
 VERSION = "0.1.3"
@@ -126,5 +126,5 @@ setup(
     license=LICENSE,
     packages=find_packages(),
     python_requires=">=3.6",
-    cmdclass={'bdist_wheel': UniversalBdistWheel},
+    #cmdclass={'bdist_wheel': UniversalBdistWheel},
 )
