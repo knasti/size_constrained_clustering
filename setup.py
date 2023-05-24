@@ -1,4 +1,5 @@
 from setuptools import find_packages, Extension, dist
+from wheel.bdist_wheel import bdist_wheel
 
 try:
     from setuptools import setup
@@ -102,21 +103,28 @@ else:
 with open(os.path.join(path, "requirements.txt")) as fp:
     install_requires = fp.read().strip().split("\n")
 
-VERSION = "0.1.2"
+class UniversalBdistWheel(bdist_wheel):
+    def finalize_options(self):
+        bdist_wheel.finalize_options(self)
+        self.universal = True
+
+
+VERSION = "0.1.3"
 LICENSE = "MIT"
 setup(
     ext_modules=extensions,
     version=VERSION,
     setup_requires=["cython", "numpy"],
     install_requires=install_requires,
-    name="size_constrained_clustering",
+    name="size_constrained_clustering2",
     description="Size Constrained Clustering solver",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/jingw2/size_constrained_clustering",
-    author="Jing Wang",
-    author_email="jingw2@foxmail.com",
+    url="https://github.com/AlbertPlaPlanas/size_constrained_clustering",
+    author="Albert Pla",
+    author_email="plaalbert@gmail.com",
     license=LICENSE,
     packages=find_packages(),
     python_requires=">=3.6",
+    cmdclass={'bdist_wheel': UniversalBdistWheel},
 )
