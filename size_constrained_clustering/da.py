@@ -32,7 +32,7 @@ class DeterministicAnnealing(base.Base):
         '''
         super(DeterministicAnnealing, self).__init__(n_clusters, max_iters, distance_func)
         self.lamb = distribution
-        assert np.sum(distribution) == 1 
+        assert round(np.sum(distribution),10) == 1 
         assert len(distribution) == n_clusters
         assert isinstance(T, list) or T is None
 
@@ -101,8 +101,7 @@ class DeterministicAnnealing(base.Base):
         distance_matrix = self.distance_func(X, self.cluster_centers_)
         eta = self.update_eta(self._eta, self._demands_prob, distance_matrix)
         gibbs = self.update_gibbs(eta, distance_matrix)
-        labels = np.argmax(gibbs, axis=1)
-        return labels
+        return np.argmax(gibbs, axis=1)
 
     def modify(self, labels, centers, distance_matrix):
         centers_distance = self.distance_func(centers, centers)
@@ -130,8 +129,7 @@ class DeterministicAnnealing(base.Base):
 
     def initial_centers(self, X):
         selective_centers = random.sample(range(X.shape[0]), self.n_clusters)
-        centers = X[selective_centers]
-        return centers
+        return X[selective_centers]
 
     def _is_satisfied(self, labels):
         count = collections.Counter(labels)
@@ -159,14 +157,12 @@ class DeterministicAnnealing(base.Base):
         eta_repmat = np.tile(np.asarray(eta).reshape(1, -1), (n_points, 1))
         exp_term = np.exp(- self.beta * distance_matrix)
         factor = np.multiply(exp_term, eta_repmat)
-        gibbs = factor / np.sum(factor, axis=1).reshape((-1, 1))
-        return gibbs
+        return factor / np.sum(factor, axis=1).reshape((-1, 1))
 
     def update_centers(self, demands_prob, gibbs, X):
         n_points, n_features = X.shape
         divide_up = gibbs.T.dot(X * demands_prob)# n_cluster, n_features
         p_y = np.sum(gibbs * demands_prob, axis=0) # n_cluster,
         p_y_repmat = np.tile(p_y.reshape(-1, 1), (1, n_features))
-        centers = np.divide(divide_up, p_y_repmat)
-        return centers
+        return np.divide(divide_up, p_y_repmat)
 
