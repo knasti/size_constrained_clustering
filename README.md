@@ -10,6 +10,8 @@
 Implementation of Size Constrained Clustering. 
 Size constrained clustering can be treated as an optimization problem. Details could be found in a set of reference paper.
 
+This is a fork of https://github.com/jingw2/size_constrained_clustering that solves installation issues.
+
 ### Installation
 Requirement Python >= 3.6, Numpy >= 1.13, Cython >= 0.29
 * install from PyPI
