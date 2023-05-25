@@ -169,3 +169,92 @@ class DeterministicAnnealing(base.Base):
         centers = np.divide(divide_up, p_y_repmat)
         return centers
 
+    def enforce_cluster_distribution(X, distribution, model):
+        '''
+        This function enforces the distribution of labels in the clusters.
+        It does so by moving the datapoints from the clusters with too many datapoints
+        to the clusters with too few datapoints.
+
+        Parameters
+        ----------
+        X : array-like, shape (n_samples, n_features)
+            The data to cluster.
+        distribution : array-like, shape (n_clusters,)  
+            The distribution of labels in the data.
+        model : DeterministicAnnealing
+            The fitted clustering model.
+        '''
+        
+        n_samples = len(X)
+        centers = model.cluster_centers_
+        labels = model.labels_
+
+        # Obtain the expected number of labels in each cluster
+        expected_allocation = np.array(distribution) * n_samples
+        
+        # Obtain the number of labels in each cluster
+        unique, resulting_allocation = np.unique(model.labels_, return_counts=True)
+        
+        while not (expected_allocation == resulting_allocation).all():
+            too_big_clusts = []
+            too_small_clusts = []
+            for i in range(0, len(expected_allocation)):
+                if resulting_allocation[i] > expected_allocation[i]:
+                    too_big_clusts.append(i)
+                elif resulting_allocation[i] < expected_allocation[i]:
+                    too_small_clusts.append(i)
+
+            big_indexes = (too_big_clusts[0] == labels)
+            distances_to_center = np.linalg.norm(X - centers[too_big_clusts[0]], axis=1)
+            distances_to_center[~big_indexes] = 0
+            max_dist_index = np.argmax(distances_to_center)
+
+            closest_small_cluster = too_small_clusts[np.argmin(np.linalg.norm(X[max_dist_index] - centers[too_small_clusts], axis=1))]
+            labels[max_dist_index] = closest_small_cluster
+            
+            model.labels_ = labels
+            unique, resulting_allocation = np.unique(model.labels_, return_counts=True)
+
+        
+        return(model, labels, resulting_allocation)
+    
+    def enforce_cluster_distribution_opt(X, distribution, model):
+        '''
+        This function enforces the distribution of labels in the clusters.
+        It does so by moving the datapoints from the clusters with too many datapoints
+        to the clusters with too few datapoints.
+
+        Parameters
+        ----------
+        X : array-like, shape (n_samples, n_features)
+            The data to cluster.
+        distribution : array-like, shape (n_clusters,)  
+            The distribution of labels in the data.
+        model : DeterministicAnnealing
+            The fitted clustering model.
+        '''
+
+        n_samples = len(X)
+        centers = model.cluster_centers_
+        labels = model.labels_
+
+        # Obtain the expected number of labels in each cluster
+        expected_allocation = np.array(distribution) * n_samples
+        resulting_allocation = np.bincount(labels, minlength=len(expected_allocation))
+
+        while not np.array_equal(expected_allocation, resulting_allocation):
+            too_big_clusts, = np.where(resulting_allocation > expected_allocation)
+            too_small_clusts, = np.where(resulting_allocation < expected_allocation)
+
+            big_indexes = labels == too_big_clusts[0]
+            distances_to_center = np.linalg.norm(X - centers[too_big_clusts[0]], axis=1)
+            distances_to_center[~big_indexes] = 0
+            max_dist_index = np.argmax(distances_to_center)
+
+            closest_small_cluster = too_small_clusts[np.argmin(np.linalg.norm(X[max_dist_index] - centers[too_small_clusts], axis=1))]
+            labels[max_dist_index] = closest_small_cluster
+
+            resulting_allocation = np.bincount(labels, minlength=len(expected_allocation))
+
+        model.labels_ = labels
+        return model, labels, resulting_allocation

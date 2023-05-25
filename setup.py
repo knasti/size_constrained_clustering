@@ -14,23 +14,13 @@ with open(os.path.join(this_directory, "README.md"), encoding="utf-8") as f:
 
 dist.Distribution().fetch_build_eggs(["numpy>=1.13"])
 
-
-try:
-    from numpy import get_include
-except:
-    def get_include():
-        # Defer import to later
-        from numpy import get_include
-
-        return get_include()
-
 path = os.path.dirname(os.path.abspath(__file__))
 
 with open(os.path.join(path, "requirements.txt")) as fp:
     install_requires = fp.read().strip().split("\n")
 
 
-VERSION = "0.0.3"
+VERSION = "0.0.4"
 LICENSE = "MIT"
 setup(
     #ext_modules=extensions,
