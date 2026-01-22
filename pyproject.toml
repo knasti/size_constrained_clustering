@@ -17,8 +17,14 @@ dependencies = [
     "psutil>=6.0.0",
     "numpy>=2.0.0",
     "scipy>=1.14.0",
-    "ortools>=9.11,<10.0", # Keep ortools in the 9.x series for stability
     "six>=1.16.0",
     "Cython>=3.0.0",
     "scikit-learn>=1.5.0",
 ]
+
+[project.optional-dependencies]
+# Development/testing dependencies - OR-Tools for equivalence testing
+# Note: OR-Tools does not support Python 3.14t (free-threaded), so we use a custom
+# Cython min-cost flow implementation that provides equivalent functionality
+dev = ["ortools>=9.11,<10.0", "pytest>=7.0"]
+test = ["pytest>=7.0"]

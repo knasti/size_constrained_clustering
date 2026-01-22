@@ -48,6 +48,14 @@ def no_cythonize(extensions, **_ignore):
 # FIX: Use relative paths instead of absolute paths
 extensions = [
     Extension(
+        "size_constrained_clustering.k_means_constrained.min_cost_flow",
+        [
+            "size_constrained_clustering/k_means_constrained/min_cost_flow.pyx",
+        ],
+        include_dirs=[get_include()],
+        extra_compile_args=['-O3'] if os.name != 'nt' else [],
+    ),
+    Extension(
         "size_constrained_clustering.k_means_constrained.mincostflow_vectorized_",
         [
             "size_constrained_clustering/k_means_constrained/mincostflow_vectorized_.pyx",
@@ -80,7 +88,11 @@ extensions = [
 CYTHONIZE = bool(int(os.getenv("CYTHONIZE", 1))) and cythonize is not None
 
 if CYTHONIZE:
-    compiler_directives = {"language_level": 3, "embedsignature": True}
+    compiler_directives = {
+        "language_level": 3,
+        "embedsignature": True,
+        "freethreading_compatible": True,  # For Python 3.14t support
+    }
     extensions = cythonize(extensions, compiler_directives=compiler_directives)
 else:
     extensions = no_cythonize(extensions)

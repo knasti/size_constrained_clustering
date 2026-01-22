@@ -2,8 +2,10 @@
 
 import numpy as np
 
-# Cython paths must be fully qualified
-from ortools.graph.python.min_cost_flow import SimpleMinCostFlow
+# Use our custom Cython implementation instead of OR-Tools
+# This provides identical API to ortools.graph.python.min_cost_flow.SimpleMinCostFlow
+# but works with Python 3.14t (free-threaded) and removes the OR-Tools dependency
+from size_constrained_clustering.k_means_constrained.min_cost_flow import SimpleMinCostFlow
 
 from size_constrained_clustering.k_means_constrained.mincostflow_vectorized_ import (
     SimpleMinCostFlow_AddArcWithCapacityAndUnitCostVectorized,
